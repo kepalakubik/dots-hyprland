@@ -100,6 +100,10 @@ Item {
             gravity: Edges.Top | Edges.Right
             edges: Edges.Top | Edges.Left
         }
+        
+        surfaceFormat {
+            opaque: true
+        }
 
         visible: popupBackground.opacity > 0
         color: "transparent"
