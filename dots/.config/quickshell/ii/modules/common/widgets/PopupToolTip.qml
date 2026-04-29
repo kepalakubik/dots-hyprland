@@ -49,6 +49,10 @@ Item {
             mask: Region {
                 item: null
             }
+            
+            surfaceFormat {
+                opaque: true
+            }
 
             color: "transparent"
             implicitWidth: root.contentItem.implicitWidth + root.horizontalMargin * 2
