@@ -8,6 +8,7 @@ import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
 import qs.modules.common.panels.lock
+import qs.modules.waffle.looks
 import qs.modules.ii.bar as Bar
 import Quickshell
 import Quickshell.Services.SystemTray
@@ -125,6 +126,32 @@ MouseArea {
                 text: "fingerprint"
                 iconSize: Appearance.font.pixelSize.hugeass
                 color: Appearance.colors.colOnSurfaceVariant
+            }
+        }
+        
+        Rectangle {
+            id: profilePicture
+            radius: 100
+            color: Appearance.colors.colLayer1
+            Layout.fillHeight: true
+            implicitWidth: height
+            clip: true
+            
+            MaterialSymbol {
+                fill: 1
+                anchors.centerIn: parent
+                text: "account_circle"
+                iconSize: Appearance.font.pixelSize.hugeass
+                color: Appearance.colors.colOnSurfaceVariant
+            }
+            
+            WUserAvatar {
+                anchors.fill: parent
+                Layout.alignment: Qt.AlignHCenter
+                sourceSize {
+                    width: width
+                    height: height
+                }
             }
         }
 
@@ -246,7 +273,28 @@ MouseArea {
             icon: "account_circle"
             text: SystemInfo.username
         }
+    }
 
+    // Right toolbar
+    Toolbar {
+        id: rightIsland
+        anchors {
+            left: mainIsland.right
+            top: mainIsland.top
+            bottom: mainIsland.bottom
+            leftMargin: 10
+        }
+
+        scale: root.toolbarScale
+        opacity: root.toolbarOpacity
+
+        IconAndTextPair {
+            visible: Battery.available
+            icon: Battery.isCharging ? "bolt" : "battery_android_full"
+            text: Math.round(Battery.percentage * 100)
+            color: (Battery.isLow && !Battery.isCharging) ? Appearance.colors.colError : Appearance.colors.colOnSurfaceVariant
+        }
+        
         // Keyboard layout (Xkb)
         Loader {
             Layout.rightMargin: 8
@@ -285,27 +333,6 @@ MouseArea {
             showOverflowMenu: false
             pinnedItems: SystemTray.items.values.filter(i => i.id == "Fcitx")
             visible: pinnedItems.length > 0
-        }
-    }
-
-    // Right toolbar
-    Toolbar {
-        id: rightIsland
-        anchors {
-            left: mainIsland.right
-            top: mainIsland.top
-            bottom: mainIsland.bottom
-            leftMargin: 10
-        }
-
-        scale: root.toolbarScale
-        opacity: root.toolbarOpacity
-
-        IconAndTextPair {
-            visible: Battery.available
-            icon: Battery.isCharging ? "bolt" : "battery_android_full"
-            text: Math.round(Battery.percentage * 100)
-            color: (Battery.isLow && !Battery.isCharging) ? Appearance.colors.colError : Appearance.colors.colOnSurfaceVariant
         }
 
         IconToolbarButton {
