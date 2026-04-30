@@ -11,6 +11,7 @@ import qs.modules.common.panels.lock
 import qs.modules.waffle.looks
 import qs.modules.ii.bar as Bar
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Mpris
 import Quickshell.Services.SystemTray
 
@@ -64,10 +65,25 @@ MouseArea {
 
     // Key presses
     property bool ctrlHeld: false
+    property bool capsLockActive: false
+    
+    Process {
+        running: true
+        command: [ "bash", "-c", "cat $(ls /sys/class/leds/*capslock/brightness | head -n1)" ]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.capsLockActive = (this.text.includes("1"))
+            }
+        }
+    }
+    
     Keys.onPressed: event => {
         root.context.resetClearTimer();
         if (event.key === Qt.Key_Control) {
             root.ctrlHeld = true;
+        }
+        if (event.key === Qt.Key_Shift || event.key === Qt.Key_CapsLock) {
+            root.capsLockActive = !root.capsLockActive;
         }
         if (event.key === Qt.Key_Escape) { // Esc to clear
             root.context.currentText = "";
@@ -77,6 +93,9 @@ MouseArea {
     Keys.onReleased: event => {
         if (event.key === Qt.Key_Control) {
             root.ctrlHeld = false;
+        }
+        if (event.key === Qt.Key_Shift) {
+            root.capsLockActive = false;
         }
         forceFieldFocus();
     }
@@ -142,12 +161,13 @@ MouseArea {
             MaterialSymbol {
                 fill: 1
                 anchors.centerIn: parent
-                text: "account_circle"
+                text: capsLockActive ? "uppercase" : "account_circle"
                 iconSize: Appearance.font.pixelSize.hugeass
                 color: Appearance.colors.colOnSurfaceVariant
             }
             
             WUserAvatar {
+                opacity: capsLockActive ? 0 : 1
                 anchors.fill: parent
                 Layout.alignment: Qt.AlignHCenter
                 sourceSize {
