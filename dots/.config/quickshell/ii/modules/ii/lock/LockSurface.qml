@@ -95,7 +95,7 @@ MouseArea {
             root.ctrlHeld = false;
         }
         if (event.key === Qt.Key_Shift) {
-            root.capsLockActive = false;
+            root.capsLockActive = !root.capsLockActive;
         }
         forceFieldFocus();
     }
@@ -273,6 +273,52 @@ MouseArea {
                     }
                 }
                 color: confirmButton.enabled ? Appearance.colors.colOnPrimary : Appearance.colors.colSubtext
+            }
+        }
+    }
+    
+    // Top middle toolbar (as popup)
+    Loader {
+        id: topMainIsland
+        
+        active: opacity > 0
+        visible: active
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: mainIsland.top
+            bottomMargin: 0
+        }
+        
+        opacity: 0
+        scale: 0.9
+        
+        states: State {
+            name: "active"
+            when: root.capsLockActive
+            PropertyChanges {
+                topMainIsland.anchors.bottomMargin: 10
+                topMainIsland.opacity: 1
+                topMainIsland.scale: 1
+            }
+        }
+        
+        transitions: Transition {
+            NumberAnimation {
+                properties: "topMainIsland.anchors.bottomMargin,topMainIsland.opacity,topMainIsland.scale"
+                alwaysRunToEnd: true
+                duration: Appearance.animation.elementMoveFast.duration
+                easing.type: Appearance.animation.elementMoveFast.type
+                easing.bezierCurve: Appearance.animation.elementMoveFast.bezierCurve
+            }
+        }
+        
+        sourceComponent: Toolbar {
+            implicitHeight: uppercaseText.height + padding
+            
+            IconAndTextPair {
+                id: uppercaseText
+                icon: "uppercase"
+                text: "Capslock/Shift active"
             }
         }
     }
