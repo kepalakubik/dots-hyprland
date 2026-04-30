@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
@@ -12,6 +13,7 @@ import qs.modules.waffle.looks
 import qs.modules.ii.bar as Bar
 import Quickshell
 import Quickshell.Io
+import Quickshell.Widgets
 import Quickshell.Services.Mpris
 import Quickshell.Services.SystemTray
 
@@ -318,8 +320,17 @@ MouseArea {
             IconAndTextPair {
                 id: uppercaseText
                 icon: "uppercase"
-                text: "Capslock/Shift active"
+                text: Translation.tr("Capslock/Shift active")
             }
+        }
+    }
+    
+    Timer { // Force update for revision
+        running: root.activePlayer.playbackState == MprisPlaybackState.Playing
+        interval: Config.options.resources.updateInterval
+        repeat: true
+        onTriggered: {
+            root.activePlayer.positionChanged()
         }
     }
 
@@ -327,6 +338,7 @@ MouseArea {
     Toolbar {
         id: leftIsland
         implicitWidth: rightIsland.width
+        padding: 0
         anchors {
             right: mainIsland.left
             top: mainIsland.top
@@ -335,10 +347,42 @@ MouseArea {
         }
         scale: root.toolbarScale
         opacity: root.toolbarOpacity
-
-        LockMediaPlayer {
-            Layout.maximumHeight: parent.height
-            player: root.activePlayer
+        
+        Item {
+            implicitWidth: parent.width
+            Layout.fillHeight: true
+            
+            Loader {
+                id: progressLoader
+                anchors.fill: parent
+                active: root.activePlayer.length > 0
+                visible: active
+                
+                sourceComponent: ClippingRectangle {
+                    id: progressMask
+                    radius: leftIsland.radius
+                    color: "transparent"
+                                        
+                    Rectangle {
+                        id: progressCurrent
+                        width: (root.activePlayer.position / root.activePlayer.length) * parent.width
+                        implicitHeight: parent.height
+                        color: Appearance.colors.colSecondaryContainer
+                        
+                        Behavior on width {
+                            NumberAnimation { duration: 300; easing.type: Easing.OutQuad }
+                        }
+                    }
+                }
+            }
+            
+            LockMediaPlayer {
+                anchors {
+                    fill: parent
+                    margins: 8
+                }
+                player: root.activePlayer
+            }
         }
     }
 

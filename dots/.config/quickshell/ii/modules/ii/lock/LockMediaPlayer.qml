@@ -71,7 +71,9 @@ RowLayout {
                 cache: false
                 antialiasing: true
                 asynchronous: true
-                            
+                
+                width: songArt.width
+                height: songArt.height
                 sourceSize {
                     width: songArt.width
                     height: songArt.height
