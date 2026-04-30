@@ -213,6 +213,24 @@ Scope {
                     cache: false
                     smooth: true
                     mipmap: true
+                    
+                    // Blur:
+                    // We will use MultiEffect instead of GussianBlur for better performance
+                    layer.enabled: blurLoader.active
+                    layer.effect: blurLoader.item
+                    
+                    Rectangle {
+                        opacity: GlobalStates.screenLocked ? 1 : 0
+                        anchors.fill: wallpaper
+                        color: CF.ColorUtils.transparentize(Appearance.colors.colLayer0, 0.5)
+                        
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 400
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                    }
 
                     property int workspaceIndex: (bgRoot.monitor.activeWorkspace?.id ?? 1) - 1
                     property real middleFraction: 0.5
@@ -290,16 +308,10 @@ Scope {
                             easing.bezierCurve: Appearance.animationCurves.expressiveDefaultSpatial
                         }
                     }
-                    sourceComponent: GaussianBlur {
+                    sourceComponent: StyledBlurEffect {
                         source: wallpaper
-                        radius: GlobalStates.screenLocked ? Config.options.lock.blur.radius : 0
-                        samples: radius * 2 + 1
-
-                        Rectangle {
-                            opacity: GlobalStates.screenLocked ? 1 : 0
-                            anchors.fill: parent
-                            color: CF.ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
-                        }
+                        blurMax: Config.options.lock.blur.radius
+                        blurEnabled: GlobalStates.screenLocked
                     }
                 }
 
