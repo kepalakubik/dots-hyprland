@@ -161,13 +161,13 @@ MouseArea {
             MaterialSymbol {
                 fill: 1
                 anchors.centerIn: parent
-                text: capsLockActive ? "uppercase" : "account_circle"
+                text: "account_circle"
                 iconSize: Appearance.font.pixelSize.hugeass
                 color: Appearance.colors.colOnSurfaceVariant
             }
             
             WUserAvatar {
-                opacity: capsLockActive ? 0 : 1
+                opacity: 1
                 anchors.fill: parent
                 Layout.alignment: Qt.AlignHCenter
                 sourceSize {
@@ -291,6 +291,7 @@ MouseArea {
         opacity: root.toolbarOpacity
 
         LockMediaPlayer {
+            Layout.maximumHeight: parent.height
             player: root.activePlayer
         }
     }

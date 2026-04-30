@@ -12,7 +12,6 @@ import Quickshell.Widgets
 RowLayout {
     id: root
     
-    Layout.fillHeight: true
     spacing: 10
     
     required property MprisPlayer player
@@ -62,28 +61,34 @@ RowLayout {
             color: Appearance.colors.colOnSurfaceVariant
         }
         
-        Image {
+        Loader {
+            active: root.displayedArtFilePath.length > 0
+            visible: active
             anchors.fill: parent
-            source: root.displayedArtFilePath
-            cache: false
-            antialiasing: true
-            asynchronous: true
-                        
-            sourceSize {
-                width: songArt.width
-                height: songArt.height
+            
+            sourceComponent: Image {
+                source: root.displayedArtFilePath
+                cache: false
+                antialiasing: true
+                asynchronous: true
+                            
+                sourceSize {
+                    width: songArt.width
+                    height: songArt.height
+                }
             }
         }
     }
     
     ColumnLayout {
-        Layout.fillHeight: true
-        spacing: 1
+        spacing: 2
         
         StyledText {
             id: trackTitle
             Layout.fillWidth: true
             font.pixelSize: Appearance.font.pixelSize.small
+            lineHeightMode: Text.FixedHeight
+            lineHeight: font.pixelSize
             color: Appearance.colors.colOnSurfaceVariant
             elide: Text.ElideRight
             text: StringUtils.cleanMusicTitle(root.player?.trackTitle) || Translation.tr("No active player")
@@ -97,6 +102,8 @@ RowLayout {
             id: trackArtist
             Layout.fillWidth: true
             font.pixelSize: Appearance.font.pixelSize.smallest
+            lineHeightMode: Text.FixedHeight
+            lineHeight: font.pixelSize
             color: Appearance.colors.colOnSurfaceVariant
             elide: Text.ElideRight
             text: root.player?.trackArtist
