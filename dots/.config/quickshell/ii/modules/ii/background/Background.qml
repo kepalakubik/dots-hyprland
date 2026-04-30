@@ -305,7 +305,8 @@ Scope {
                     }
                     sourceComponent: StyledBlurEffect {
                         source: wallpaper
-                        blurMax: GlobalStates.screenLocked ? 64 : 0
+                        blurMax: 64
+                        blurEnabled: GlobalStates.screenLocked
                         saturation: 0
                     }
                 }
