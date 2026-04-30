@@ -214,11 +214,6 @@ Scope {
                     smooth: true
                     mipmap: true
                     
-                    // Blur:
-                    // We will use MultiEffect instead of GussianBlur for better performance
-                    layer.enabled: blurLoader.active
-                    layer.effect: blurLoader.item
-                    
                     Rectangle {
                         opacity: GlobalStates.screenLocked ? 1 : 0
                         anchors.fill: wallpaper
@@ -310,8 +305,8 @@ Scope {
                     }
                     sourceComponent: StyledBlurEffect {
                         source: wallpaper
-                        blurMax: Config.options.lock.blur.radius
-                        blurEnabled: GlobalStates.screenLocked
+                        blurMax: GlobalStates.screenLocked ? 64 : 0
+                        saturation: 0
                     }
                 }
 
