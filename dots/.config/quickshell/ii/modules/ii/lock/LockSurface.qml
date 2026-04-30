@@ -11,6 +11,7 @@ import qs.modules.common.panels.lock
 import qs.modules.waffle.looks
 import qs.modules.ii.bar as Bar
 import Quickshell
+import Quickshell.Services.Mpris
 import Quickshell.Services.SystemTray
 
 MouseArea {
@@ -18,6 +19,7 @@ MouseArea {
     required property LockContext context
     property bool active: false
     property bool showInputField: active || context.currentText.length > 0
+    readonly property MprisPlayer activePlayer: MprisController.activePlayer
     readonly property bool requirePasswordToPower: Config.options.lock.security.requirePasswordToPower
 
     // Force focus on entry
@@ -258,6 +260,7 @@ MouseArea {
     // Left toolbar
     Toolbar {
         id: leftIsland
+        implicitWidth: rightIsland.width
         anchors {
             right: mainIsland.left
             top: mainIsland.top
@@ -267,11 +270,8 @@ MouseArea {
         scale: root.toolbarScale
         opacity: root.toolbarOpacity
 
-        // Username
-        IconAndTextPair {
-            Layout.leftMargin: 8
-            icon: "account_circle"
-            text: SystemInfo.username
+        LockMediaPlayer {
+            player: root.activePlayer
         }
     }
 
