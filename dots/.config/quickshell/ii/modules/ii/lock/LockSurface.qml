@@ -326,7 +326,7 @@ MouseArea {
     }
     
     Timer { // Force update for revision
-        running: root.activePlayer.playbackState == MprisPlaybackState.Playing
+        running: root.activePlayer?.playbackState == MprisPlaybackState.Playing
         interval: Config.options.resources.updateInterval
         repeat: true
         onTriggered: {

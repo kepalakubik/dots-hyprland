@@ -92,7 +92,7 @@ Item { // Player instance
                 url=$(curl -4 -fsSL "$url" | sed -n 's/.*"thumbnail_url":"\\([^"]*\\)".*/\\1/p') ;;
             esac
             if [ -n "$url" ]; then curl -4 -fsSL "$url" -o "$out"; fi
-        ` ]
+        `]
         onExited: (exitCode, exitStatus) => {
             root.downloaded = true
         }
