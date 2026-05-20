@@ -3,7 +3,7 @@ hl.monitor({
     output = "",
     mode = "preferred",
     position = "auto",
-    scale = "1"
+    scale = "1.20"
 })
 
 hl.gesture({
@@ -75,7 +75,7 @@ hl.config({
         rounding = 18,
 
         blur = {
-            enabled = true,
+            enabled = false,
             xray = true,
             special = false,
             new_optimizations = true,
@@ -262,6 +262,9 @@ hl.config({
         follow_mouse = 1,
         off_window_axis_events = 2,
 
+        force_no_accel = true,
+        accel_profile = "flat",
+
         touchpad = {
             natural_scroll = true,
             disable_while_typing = true,
@@ -296,7 +299,8 @@ hl.config({
         zoom_factor = 1,
         zoom_rigid = false,
         zoom_disable_aa = true,
-        hotspot_padding = 1
+        hotspot_padding = 1,
+        no_hardware_cursors = 0
     },
 
     xwayland = {
