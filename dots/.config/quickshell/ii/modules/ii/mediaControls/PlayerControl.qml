@@ -81,18 +81,24 @@ Item { // Player instance
         id: coverArtDownloader
         property string targetFile: root.artUrl
         property string artFilePath: root.artFilePath
-        // For oEmbed URLs (returned by StringUtils.getYoutubeArtUrl for
-        // playlist / channel links), resolve the JSON `thumbnail_url` field
-        // first, then download the resulting image with the same curl call.
-        command: [ "bash", "-c", `
-            out='${artFilePath}'
-            url='${targetFile}'
-            if [ -z "$url" ] || [ -f "$out" ]; then exit 0; fi
-            case "$url" in *"/oembed?"*)
-                url=$(curl -4 -fsSL "$url" | sed -n 's/.*"thumbnail_url":"\\([^"]*\\)".*/\\1/p') ;;
-            esac
-            if [ -n "$url" ]; then curl -4 -fsSL "$url" -o "$out"; fi
-        `]
+        // Path and URL are passed as positional parameters ($1, $2) rather than
+        // substituted into the script string, so values containing characters
+        // that would need shell-escaping (spaces, single quotes, $, backticks,
+        // etc.) are handled correctly. For oEmbed URLs (returned by
+        // StringUtils.getYoutubeArtUrl for playlist / channel links), resolve
+        // the JSON `thumbnail_url` field first, then download the image.
+        command: [
+            "bash", "-c", `
+                out=$1
+                url=$2
+                if [ -z "$url" ] || [ -f "$out" ]; then exit 0; fi
+                case "$url" in *"/oembed?"*)
+                    url=$(curl -4 -fsSL "$url" | sed -n 's/.*"thumbnail_url":"\\([^"]*\\)".*/\\1/p') ;;
+                esac
+                if [ -n "$url" ]; then curl -4 -fsSL "$url" -o "$out"; fi
+            `,
+            "qs-coverart", artFilePath, targetFile
+        ]
         onExited: (exitCode, exitStatus) => {
             root.downloaded = true
         }
